@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "PhonePe-Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "33742de2-da86-4932-aedb-f51b1481d1fa"
+  }
+}

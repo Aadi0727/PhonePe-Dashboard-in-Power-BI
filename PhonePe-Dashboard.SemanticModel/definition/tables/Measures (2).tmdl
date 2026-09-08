@@ -1,0 +1,165 @@
+table 'Measures (2)'
+	lineageTag: d17480e6-f089-4527-9b05-ace4b678f277
+
+	measure 'Total Transaction Value' =
+			
+			SUM(All_Transactions[Amount])
+		lineageTag: 6ae316d4-c223-4587-bf4f-b66473beb76d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Transactions' =
+			
+			DISTINCTCOUNT(All_Transactions[Transaction_ID])
+		formatString: 0
+		lineageTag: 77744f32-8bf6-4454-ade0-f237e0d81523
+
+	measure 'Successful Transactions' =
+			
+			CALCULATE(
+			    [Total Transactions],
+			    All_Transactions[Payment_Status] = "Successful"
+			)
+		formatString: 0
+		lineageTag: e6c52e64-b3b5-4a2b-8de1-d9291fee1c95
+
+	measure 'Success Rate' =
+			
+			DIVIDE(
+			    [Successful Transactions],
+			    [Total Transactions],
+			    0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8fe2e90f-5659-464f-bdb1-845da2fc5d76
+
+	measure 'Total Users' =
+			
+			DISTINCTCOUNT(All_Users[User_ID])
+		formatString: 0
+		lineageTag: d3f6056e-e27a-47eb-bf34-c57a7a9a0e04
+
+	measure 'Transaction Value PM' =
+			
+			CALCULATE(
+			    [Total Transaction Value],
+			    DATEADD(Date_Table[Date], -1, MONTH)
+			)
+		lineageTag: 1d62ae28-9d58-493c-b312-30219d6b5247
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Transaction Value MOM %' =
+			
+			DIVIDE(
+			    [Total Transaction Value] - [Transaction Value PM],
+			    [Transaction Value PM],
+			    0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f75a7d7f-3b51-4b47-aab2-add1d0994397
+
+	measure 'Transactions PM' =
+			
+			CALCULATE(
+			    [Total Transactions],
+			    DATEADD(Date_Table[Date], -1, MONTH)
+			)
+		formatString: 0
+		lineageTag: bf6da278-5bbb-46f2-9cc7-30df167e0312
+
+	measure 'Transactions MOM %' =
+			
+			DIVIDE(
+			    [Total Transactions] - [Transactions PM],
+			    [Transactions PM],
+			    0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0d3ec567-0c88-4d47-ac41-74c541e09373
+
+	measure 'Transacting Users' =
+			
+			DISTINCTCOUNT(All_Transactions[User_ID])
+		formatString: 0
+		lineageTag: df3b738f-4664-4edf-9f3f-8e248f14d0f1
+
+	measure 'TEST Rows' =
+			
+			COUNTROWS(All_Transactions)
+		formatString: 0
+		lineageTag: 496d7b45-0df6-4432-91fb-bebdd10db7b5
+
+	measure 'TEST Users' =
+			
+			COUNTROWS(All_Users)
+		formatString: 0
+		lineageTag: 566c564f-6d02-4d62-86b9-08e93170d8f5
+
+	measure 'Unique Users' =
+			
+			DISTINCTCOUNT(All_Transactions[User_ID])
+		formatString: 0
+		lineageTag: 2c917a21-b46b-4c96-9d0b-ed6b357aa14a
+
+	measure 'Failed Transactions' =
+			
+			CALCULATE(
+			    COUNTROWS(All_Transactions),
+			    All_Transactions[Payment_Status] = "Failed"
+			)
+		formatString: 0
+		lineageTag: 87f8ed95-8ed5-4d35-b455-e8646ac310f6
+
+	measure 'Failure Rate %' =
+			
+			DIVIDE(
+			    [Failed Transactions],
+			    [Total Transactions],
+			    0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 38c15dde-81df-47e1-9a86-225fabb9a073
+
+	measure 'Pending Rate %' =
+			
+			DIVIDE(
+			    CALCULATE(COUNTROWS(All_Transactions), All_Transactions[Payment_Status] = "Pending"),
+			    [Total Transactions],
+			    0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8f56c25c-1988-4ec2-9d44-1aa99477d860
+
+	measure 'Pending Transactions' =
+			
+			CALCULATE(
+			    COUNTROWS(All_Transactions),
+			    All_Transactions[Payment_Status] = "Pending"
+			)
+		formatString: 0
+		lineageTag: 1f013141-ff16-4c3a-9b61-d97860ad7488
+
+	measure 'Test Count' = COUNTROWS(All_Transactions)
+		formatString: 0
+		lineageTag: 6dfc86b1-b0b8-46b6-8061-aabad16e89d9
+
+	column Cal
+		dataType: string
+		lineageTag: daab2a45-a723-43ce-8753-d40bdb2499bd
+		summarizeBy: none
+		sourceColumn: Cal
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Measures (2)' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Cal = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Cal", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

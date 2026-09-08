@@ -1,0 +1,18 @@
+relationship 2d82ba93-cab2-4a09-96e9-ba6131019a05
+	joinOnDateBehavior: datePartOnly
+	fromColumn: All_Users.Join_Date
+	toColumn: LocalDateTable_b1798288-376c-41e3-aa1b-19b4322ecf4a.Date
+
+relationship AutoDetected_f1fd78f8-7530-4bae-a333-5c97c05aeca1
+	fromColumn: All_Transactions.User_ID
+	toColumn: All_Users.User_ID
+
+relationship 34cd4dac-0f43-4de8-af94-7b331c3cd813
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Date_Table.Date
+	toColumn: LocalDateTable_2e42ea53-f37d-409e-9222-bcdae5622b5c.Date
+
+relationship 12bf7fad-d3cc-ae39-cbf3-6bb271f25008
+	fromColumn: All_Transactions.Date
+	toColumn: Date_Table.Date
+
